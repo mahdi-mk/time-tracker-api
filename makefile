@@ -46,8 +46,14 @@ kind-load:
 	kind load docker-image $(SERVICE_IMAGE) --name $(KIND_CLUSTER)
 
 kind-apply:
-	kubectl apply -f zarf/k8s/time-tracker-deployment.yaml
-	kubectl apply -f zarf/k8s/time-tracker-service.yaml
+	kubectl apply -f zarf/k8s/database/namespace.yaml
+	kubectl apply -f zarf/k8s/database/deployment.yaml
+	kubectl apply -f zarf/k8s/database/service.yaml
+
+	kubectl wait --namespace=database-system --timeout=120s --for=condition=Available deployment/database
+
+	kubectl apply -f zarf/k8s/time-tracker/deployment.yaml
+	kubectl apply -f zarf/k8s/time-tracker/service.yaml
 
 kind-restart:
 	kubectl rollout restart deployment $(APP) --namespace=$(NAMESPACE)
@@ -63,7 +69,7 @@ kind-logs:
 
 kind-status:
 	kubectl get nodes -o wide
-	kubectl get svc -o wide
+	kubectl get svc -o wide --all-namespaces
 	kubectl get pods -o wide --watch --all-namespaces
 
 kind-describe:

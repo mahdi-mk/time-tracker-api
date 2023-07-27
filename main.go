@@ -1,17 +1,17 @@
 package main
 
 import (
-	"log"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/mahdi-mk/time-tracker/database"
+	"github.com/mahdi-mk/time-tracker/router"
 )
 
 func main() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	router.RegisterRoutes(app)
 
-	log.Fatal(app.Listen(":8080"))
+	database.ConnectDB()
+
+	app.Listen(":8080")
 }
