@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: time-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: time-tracker
+  template:
+    metadata:
+      labels:
+        app: time-tracker
+
+    spec:
+      dnsPolicy: ClusterFirstWithHostNet
+      hostNetwork: true
+
+      containers:
+        - name: time-tracker-api
+          image: github.com/mahdi-mk/time-tracker-api:0.0.1
+          ports:
+            - containerPort: 8080
+          resources:
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
