@@ -1,6 +1,6 @@
 package database
 
-import "github.com/mahdi-mk/time-tracker/business/models"
+import "github.com/mahdi-mk/time-tracker/app/models"
 
 func RunMigrations() {
 	err := DB.AutoMigrate(
