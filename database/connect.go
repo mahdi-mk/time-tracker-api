@@ -5,8 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB *gorm.DB
-
 func ConnectDB() {
 	var err error
 
