@@ -1,7 +1,6 @@
 package database
 
 import (
-	"github.com/mahdi-mk/time-tracker/business/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -17,17 +16,5 @@ func ConnectDB() {
 
 	if err != nil {
 		panic("Failed to connect to the database")
-	}
-
-	// ===========================================================
-	// Run Migrations
-
-	err = DB.AutoMigrate(
-		&models.Project{},
-		&models.Client{},
-	)
-
-	if err != nil {
-		panic("Failed to auto migrate")
 	}
 }

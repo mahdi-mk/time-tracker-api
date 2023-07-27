@@ -12,6 +12,7 @@ func main() {
 	router.RegisterRoutes(app)
 
 	database.ConnectDB()
+	database.RunMigrations()
 
 	app.Listen(":8080")
 }
