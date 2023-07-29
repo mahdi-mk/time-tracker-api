@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/database"
+	"github.com/mahdi-mk/time-tracker/utils"
 )
 
 // Query returns a paginated list of clients
@@ -31,32 +32,28 @@ func QueryByID(c *fiber.Ctx) error {
 
 // Create stores a new client to the database
 func Create(c *fiber.Ctx) error {
-	var client models.Client
+	var clientDTO models.CreateOrUpdateClient
 
-	if err := c.BodyParser(&client); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad Request",
-		})
+	if err := utils.ParseBodyAndValidate(c, clientDTO); err != nil {
+		return err
 	}
 
-	database.DB.Create(&client)
+	database.DB.Create(&clientDTO)
 
-	return c.Status(fiber.StatusCreated).JSON(client)
+	return c.Status(fiber.StatusCreated).JSON(clientDTO)
 }
 
 // Update updates the data of the specified client
 func Update(c *fiber.Ctx) error {
-	var client models.Client
+	var clientDTO models.CreateOrUpdateClient
 
-	if err := c.BodyParser(&client); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad Request",
-		})
+	if err := utils.ParseBodyAndValidate(c, clientDTO); err != nil {
+		return err
 	}
 
-	database.DB.Where("id = ?", c.Params("id")).Updates(&client)
+	database.DB.Where("id = ?", c.Params("id")).Updates(&clientDTO)
 
-	return c.JSON(client)
+	return c.JSON(clientDTO)
 }
 
 // Delete deletes the specified client from the database

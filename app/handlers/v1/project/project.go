@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/database"
+	"github.com/mahdi-mk/time-tracker/utils"
 )
 
 // Query returns a paginated list of projects
@@ -33,10 +34,8 @@ func QueryByID(c *fiber.Ctx) error {
 func Create(c *fiber.Ctx) error {
 	var projectDTO models.CreateOrUpdateProject
 
-	if err := c.BodyParser(&projectDTO); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad Request",
-		})
+	if err := utils.ParseBodyAndValidate(c, projectDTO); err != nil {
+		return err
 	}
 
 	if res := database.DB.First(&models.Client{}, projectDTO.ClientID); res.Error != nil {
@@ -58,10 +57,8 @@ func Create(c *fiber.Ctx) error {
 func Update(c *fiber.Ctx) error {
 	var projectDTO models.CreateOrUpdateProject
 
-	if err := c.BodyParser(&projectDTO); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Bad Request",
-		})
+	if err := utils.ParseBodyAndValidate(c, projectDTO); err != nil {
+		return err
 	}
 
 	database.DB.Where("id = ?", c.Params("id")).Updates(&projectDTO)
