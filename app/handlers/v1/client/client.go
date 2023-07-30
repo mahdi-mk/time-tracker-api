@@ -32,23 +32,24 @@ func QueryByID(c *fiber.Ctx) error {
 
 // Create stores a new client to the database
 func Create(c *fiber.Ctx) error {
-	var clientDTO models.CreateOrUpdateClient
+	clientDTO := new(models.CreateOrUpdateClient)
 
-	if err := utils.ParseBodyAndValidate(c, clientDTO); err != nil {
-		return err
+	if err := utils.ValidateRequest(c, clientDTO); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
-	database.DB.Create(&clientDTO)
+	return c.JSON("DONE")
+	// database.DB.Create(&clientDTO)
 
-	return c.Status(fiber.StatusCreated).JSON(clientDTO)
+	// return c.Status(fiber.StatusCreated).JSON(clientDTO)
 }
 
 // Update updates the data of the specified client
 func Update(c *fiber.Ctx) error {
 	var clientDTO models.CreateOrUpdateClient
 
-	if err := utils.ParseBodyAndValidate(c, clientDTO); err != nil {
-		return err
+	if err := utils.ValidateRequest(c, clientDTO); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
 	database.DB.Where("id = ?", c.Params("id")).Updates(&clientDTO)

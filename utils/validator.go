@@ -9,20 +9,24 @@ import (
 
 var validatorInstance = validator.New()
 
-// Validate validates the given data, and returns validation errors if any
-func Validate(data interface{}) fiber.Map {
-	err := validatorInstance.Struct(data)
+// ValidationErrors represents the map containing the errors
+type ValidationErrors map[string]string
 
-	if err != nil {
-		var errors = make(map[string]string)
+func ValidateRequest(c *fiber.Ctx, request interface{}) ValidationErrors {
+	errors := make(ValidationErrors)
+
+	if err := c.BodyParser(request); err != nil {
+		errors["error"] = "Invalid body request"
+
+		return errors
+	}
+
+	if err := validatorInstance.Struct(request); err != nil {
 		for _, err := range err.(validator.ValidationErrors) {
 			errors[err.Field()] = fmt.Sprintf("doesn't satisfy the `%v` constraint", err.Tag())
 		}
 
-		return fiber.Map{
-			"status": fiber.StatusBadRequest,
-			"errors": errors,
-		}
+		return errors
 	}
 
 	return nil

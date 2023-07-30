@@ -32,10 +32,10 @@ func QueryByID(c *fiber.Ctx) error {
 
 // Create stores a new project to the database
 func Create(c *fiber.Ctx) error {
-	var projectDTO models.CreateOrUpdateProject
+	projectDTO := new(models.CreateOrUpdateProject)
 
-	if err := utils.ParseBodyAndValidate(c, projectDTO); err != nil {
-		return err
+	if err := utils.ValidateRequest(c, projectDTO); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
 	if res := database.DB.First(&models.Client{}, projectDTO.ClientID); res.Error != nil {
@@ -57,8 +57,8 @@ func Create(c *fiber.Ctx) error {
 func Update(c *fiber.Ctx) error {
 	var projectDTO models.CreateOrUpdateProject
 
-	if err := utils.ParseBodyAndValidate(c, projectDTO); err != nil {
-		return err
+	if err := utils.ValidateRequest(c, projectDTO); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
 	database.DB.Where("id = ?", c.Params("id")).Updates(&projectDTO)
