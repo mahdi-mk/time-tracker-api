@@ -2,10 +2,10 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
-	authGrpV1 "github.com/mahdi-mk/time-tracker/app/controllers/v1/auth"
-	clientGrpV1 "github.com/mahdi-mk/time-tracker/app/controllers/v1/client"
+	authConrtoller "github.com/mahdi-mk/time-tracker/app/controllers/v1/auth"
+	clientConrtoller "github.com/mahdi-mk/time-tracker/app/controllers/v1/client"
 	organizationController "github.com/mahdi-mk/time-tracker/app/controllers/v1/organization"
-	projectGrpV1 "github.com/mahdi-mk/time-tracker/app/controllers/v1/project"
+	projectConrtoller "github.com/mahdi-mk/time-tracker/app/controllers/v1/project"
 	"github.com/mahdi-mk/time-tracker/app/middlewares"
 )
 
@@ -16,8 +16,8 @@ func RegisterV1(group fiber.Router) {
 
 	// Authentication
 	authGrp := group.Group("/auth/")
-	authGrp.Post("register", authGrpV1.Register)
-	authGrp.Post("login", authGrpV1.Login)
+	authGrp.Post("register", authConrtoller.Register)
+	authGrp.Post("login", authConrtoller.Login)
 
 	//======================================================
 	// Protected Routes
@@ -34,17 +34,17 @@ func RegisterV1(group fiber.Router) {
 
 	// Clients
 	clientGrp := protected.Group("/clients/")
-	clientGrp.Get("", clientGrpV1.Query)
-	clientGrp.Get(":id", clientGrpV1.QueryByID)
-	clientGrp.Post("", clientGrpV1.Create)
-	clientGrp.Patch(":id", clientGrpV1.Update)
-	clientGrp.Delete(":id", clientGrpV1.Delete)
+	clientGrp.Get("", clientConrtoller.Query)
+	clientGrp.Get(":id", clientConrtoller.QueryByID)
+	clientGrp.Post("", clientConrtoller.Create)
+	clientGrp.Patch(":id", clientConrtoller.Update)
+	clientGrp.Delete(":id", clientConrtoller.Delete)
 
 	// Projects
 	projectGrp := protected.Group("/projects/")
-	projectGrp.Get("", projectGrpV1.Query)
-	projectGrp.Get(":id", projectGrpV1.QueryByID)
-	projectGrp.Post("", projectGrpV1.Create)
-	projectGrp.Patch(":id", projectGrpV1.Update)
-	projectGrp.Delete(":id", projectGrpV1.Delete)
+	projectGrp.Get("", projectConrtoller.Query)
+	projectGrp.Get(":id", projectConrtoller.QueryByID)
+	projectGrp.Post("", projectConrtoller.Create)
+	projectGrp.Patch(":id", projectConrtoller.Update)
+	projectGrp.Delete(":id", projectConrtoller.Delete)
 }
