@@ -2,9 +2,9 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
-	authGrpV1 "github.com/mahdi-mk/time-tracker/app/handlers/v1/auth"
-	clientGrpV1 "github.com/mahdi-mk/time-tracker/app/handlers/v1/client"
-	projectGrpV1 "github.com/mahdi-mk/time-tracker/app/handlers/v1/project"
+	authGrpV1 "github.com/mahdi-mk/time-tracker/app/controllers/v1/auth"
+	clientGrpV1 "github.com/mahdi-mk/time-tracker/app/controllers/v1/client"
+	projectGrpV1 "github.com/mahdi-mk/time-tracker/app/controllers/v1/project"
 	"github.com/mahdi-mk/time-tracker/app/middlewares"
 )
 
