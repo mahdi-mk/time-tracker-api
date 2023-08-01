@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/mahdi-mk/time-tracker/utils/env"
 )
 
 // TokenPayload represents the payload (data) part of the JWT
@@ -23,7 +24,7 @@ func GenerateToken(payload *TokenPayload) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Generate encoded token
-	encodedToken, err := token.SignedString([]byte("secret"))
+	encodedToken, err := token.SignedString([]byte(env.Get("JWT_SECRET", "")))
 	if err != nil {
 		return "", err
 	}

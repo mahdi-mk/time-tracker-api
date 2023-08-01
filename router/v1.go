@@ -12,14 +12,17 @@ import (
 func RegisterV1(group fiber.Router) {
 
 	//======================================================
+	// Public Routes
+
+	// Authentication
+	authGrp := group.Group("/auth/")
+	authGrp.Post("register", authGrpV1.Register)
+	authGrp.Post("login", authGrpV1.Login)
+
+	//======================================================
 	// Protected Routes
 
 	protected := group.Use(middlewares.Protected())
-
-	// Authentication
-	authGrp := protected.Group("/auth/")
-	authGrp.Post("register", authGrpV1.Register)
-	authGrp.Post("login", authGrpV1.Login)
 
 	// Organizations
 	orgGrp := protected.Group("/organizations/")
@@ -44,9 +47,4 @@ func RegisterV1(group fiber.Router) {
 	projectGrp.Post("", projectGrpV1.Create)
 	projectGrp.Patch(":id", projectGrpV1.Update)
 	projectGrp.Delete(":id", projectGrpV1.Delete)
-
-	//======================================================
-	// Public Routes
-
-	// ...
 }

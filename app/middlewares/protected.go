@@ -3,6 +3,7 @@ package middlewares
 import (
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
+	"github.com/mahdi-mk/time-tracker/utils/env"
 )
 
 func Protected() func(c *fiber.Ctx) error {
@@ -12,6 +13,6 @@ func Protected() func(c *fiber.Ctx) error {
 				"error": "Unauthorized",
 			})
 		},
-		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
+		SigningKey: jwtware.SigningKey{Key: []byte(env.Get("JWT_SECRET", ""))},
 	})
 }
