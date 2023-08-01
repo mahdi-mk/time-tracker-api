@@ -1,0 +1,68 @@
+# Go binary, executables, and object files
+*.exe
+*.o
+*.out
+*.test
+*.prof
+
+# The main .env 
+.env
+
+# Go build cache and test cache
+*.testcache
+*.cache
+
+# Go modules cache
+*.mod
+*.sum
+
+# Go coverage reports
+*.cover
+*.cov
+.coverprofile
+
+# Compiled binary, create by go-bindata
+asset/*
+
+# IDE and editor-specific files
+.idea/
+.vscode/
+*.sublime-*
+*.swp
+
+# macOS specific files
+.DS_Store
+
+# Build output directory
+/build
+
+# Generated documentation
+/docs
+
+# Ignore vendor directory (if you're using Go modules)
+/vendor/
+
+# Ignore the application's binary (built executable)
+/application
+
+# Ignore the log files (if they're not in a separate directory)
+/logs/
+
+# Ignore any sensitive or private configuration files
+# Make sure to manage your sensitive information properly and don't commit it to version control
+/config/
+
+# Ignore the application's data directory (if there's one)
+/data/
+
+# Ignore any generated files or directories
+/generated/
+
+# Ignore any temporary files or directories
+/tmp/
+
+# Ignore operating system temporary files
+# For macOS
+*.DS_Store
+# For Windows
+Thumbs.db

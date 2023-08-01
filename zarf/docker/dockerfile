@@ -22,6 +22,9 @@ FROM alpine:3.18
 # Set the working directory inside the container
 WORKDIR /time-tracker
 
+# Copy the main .env filer to the runtime image
+COPY --from=builder /time-tracker/.env ./.env
+
 # Copy the binary from the builder stage to the runtime image
 COPY --from=builder /time-tracker/time-tracker .
 

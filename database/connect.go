@@ -1,6 +1,9 @@
 package database
 
 import (
+	"fmt"
+
+	"github.com/mahdi-mk/time-tracker/utils/env"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -8,7 +11,14 @@ import (
 func ConnectDB() {
 	var err error
 
-	dsn := "host=database-service.database-system.svc.cluster.local user=root password=password dbname=time_tracker_db port=5432 sslmode=disable"
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		env.Get("DB_HOST", ""),
+		env.Get("DB_USER", ""),
+		env.Get("DB_PASS", ""),
+		env.Get("DB_NAME", ""),
+		env.Get("DB_PORT", ""),
+	)
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 
