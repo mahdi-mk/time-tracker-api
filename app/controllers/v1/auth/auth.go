@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
+	"github.com/mahdi-mk/time-tracker/app/requests"
 	"github.com/mahdi-mk/time-tracker/database"
 	"github.com/mahdi-mk/time-tracker/utils"
 	"github.com/mahdi-mk/time-tracker/utils/hash"
@@ -14,7 +15,7 @@ import (
 
 // Register registers a new user to the system
 func Register(c *fiber.Ctx) error {
-	request := new(models.RegisterUserRequest)
+	request := new(requests.RegisterUserRequest)
 
 	if err := utils.ValidateRequest(c, request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
@@ -49,7 +50,7 @@ func Register(c *fiber.Ctx) error {
 
 // Login logins an existing user to the system
 func Login(c *fiber.Ctx) error {
-	request := new(models.LoginUserRequest)
+	request := new(requests.LoginUserRequest)
 
 	if err := utils.ValidateRequest(c, request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
