@@ -4,6 +4,7 @@ import "github.com/mahdi-mk/time-tracker/app/models"
 
 func RunMigrations() {
 	err := DB.AutoMigrate(
+		&models.User{},
 		&models.Project{},
 		&models.Client{},
 	)
