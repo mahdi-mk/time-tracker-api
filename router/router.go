@@ -2,10 +2,11 @@ package router
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/mahdi-mk/time-tracker/app/middlewares"
 )
 
 func RegisterRoutes(app *fiber.App) {
-	api := app.Group("/api")
+	api := app.Group("/api", middlewares.Organizable)
 
 	// ===========================================================
 	// Version 1

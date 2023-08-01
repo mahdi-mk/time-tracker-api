@@ -1,6 +1,8 @@
 package client
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
@@ -39,8 +41,10 @@ func Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
+	orgID, _ := strconv.ParseUint(c.Locals("OrgID").(string), 10, 32)
 	client := models.Client{
-		Name: request.Name,
+		Name:           request.Name,
+		OrganizationID: uint(orgID),
 	}
 	database.DB.Create(&client)
 

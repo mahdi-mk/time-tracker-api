@@ -1,6 +1,8 @@
 package project
 
 import (
+	"strconv"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
@@ -45,10 +47,12 @@ func Create(c *fiber.Ctx) error {
 		})
 	}
 
+	orgID, _ := strconv.ParseUint(c.Locals("OrgID").(string), 10, 32)
 	project := models.Project{
-		Name:        request.Name,
-		Description: request.Description,
-		ClientID:    request.ClientID,
+		Name:           request.Name,
+		Description:    request.Description,
+		OrganizationID: uint(orgID),
+		ClientID:       request.ClientID,
 	}
 	database.DB.Create(&project)
 
