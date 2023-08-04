@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
-	"github.com/joho/godotenv"
 	"github.com/mahdi-mk/time-tracker/database"
 	"github.com/mahdi-mk/time-tracker/router"
 	"github.com/mahdi-mk/time-tracker/support/env"
@@ -11,18 +10,16 @@ import (
 )
 
 func main() {
-	// Load environment variables
-	if err := godotenv.Load(); err != nil {
-		log.Fatal("An error occurred while loading environment variables", err)
-	}
+	// Environment Variables Support
+	env.Init()
+
+	// Validation Support
+	validator.Init()
 
 	// Initialize the application
 	app := fiber.New(fiber.Config{
 		AppName: env.Get("APP_NAME", ""),
 	})
-
-	// Validator Support
-	validator.RegisterValidator()
 
 	// Register all application routes
 	router.RegisterRoutes(app)

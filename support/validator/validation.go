@@ -5,6 +5,7 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
+	"github.com/mahdi-mk/time-tracker/support/env"
 )
 
 // ValidationErrors represents the map containing the errors
@@ -17,6 +18,10 @@ func ValidateRequest(c *fiber.Ctx, request interface{}) ValidationErrors {
 
 	if err := c.BodyParser(request); err != nil {
 		errors["error"] = "Invalid body request"
+
+		if env.Get("APP_ENV", "prod") == "dev" {
+			errors["message"] = err.Error()
+		}
 
 		return errors
 	}
