@@ -6,8 +6,9 @@ func RunMigrations() {
 	err := DB.AutoMigrate(
 		&models.User{},
 		&models.Organization{},
-		&models.Project{},
 		&models.Client{},
+		&models.Project{},
+		&models.Entry{},
 	)
 
 	if err != nil {

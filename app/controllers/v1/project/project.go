@@ -7,7 +7,7 @@ import (
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
 	"github.com/mahdi-mk/time-tracker/database"
-	"github.com/mahdi-mk/time-tracker/utils"
+	"github.com/mahdi-mk/time-tracker/support/validator"
 )
 
 // Query returns a paginated list of projects
@@ -37,7 +37,7 @@ func QueryByID(c *fiber.Ctx) error {
 func Create(c *fiber.Ctx) error {
 	request := new(requests.CreateOrUpdateProject)
 
-	if err := utils.ValidateRequest(c, request); err != nil {
+	if err := validator.ValidateRequest(c, request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
@@ -72,7 +72,7 @@ func Update(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := utils.ValidateRequest(c, request); err != nil {
+	if err := validator.ValidateRequest(c, request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 

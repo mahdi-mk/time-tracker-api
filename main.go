@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/mahdi-mk/time-tracker/database"
 	"github.com/mahdi-mk/time-tracker/router"
+	"github.com/mahdi-mk/time-tracker/support/validator"
 	"github.com/mahdi-mk/time-tracker/utils/env"
 )
 
@@ -19,6 +20,9 @@ func main() {
 	app := fiber.New(fiber.Config{
 		AppName: env.Get("APP_NAME", ""),
 	})
+
+	// Validator Support
+	validator.RegisterValidator()
 
 	// Register all application routes
 	router.RegisterRoutes(app)

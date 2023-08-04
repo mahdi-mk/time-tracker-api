@@ -7,7 +7,7 @@ import (
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
 	"github.com/mahdi-mk/time-tracker/database"
-	"github.com/mahdi-mk/time-tracker/utils"
+	"github.com/mahdi-mk/time-tracker/support/validator"
 	"github.com/mahdi-mk/time-tracker/utils/hash"
 	"github.com/mahdi-mk/time-tracker/utils/jwt"
 	"gorm.io/gorm"
@@ -17,7 +17,7 @@ import (
 func Register(c *fiber.Ctx) error {
 	request := new(requests.RegisterUserRequest)
 
-	if err := utils.ValidateRequest(c, request); err != nil {
+	if err := validator.ValidateRequest(c, request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
@@ -52,7 +52,7 @@ func Register(c *fiber.Ctx) error {
 func Login(c *fiber.Ctx) error {
 	request := new(requests.LoginUserRequest)
 
-	if err := utils.ValidateRequest(c, request); err != nil {
+	if err := validator.ValidateRequest(c, request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 

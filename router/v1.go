@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	authConrtoller "github.com/mahdi-mk/time-tracker/app/controllers/v1/auth"
 	clientConrtoller "github.com/mahdi-mk/time-tracker/app/controllers/v1/client"
+	entryController "github.com/mahdi-mk/time-tracker/app/controllers/v1/entry"
 	organizationController "github.com/mahdi-mk/time-tracker/app/controllers/v1/organization"
 	projectConrtoller "github.com/mahdi-mk/time-tracker/app/controllers/v1/project"
 	"github.com/mahdi-mk/time-tracker/app/middlewares"
@@ -47,4 +48,11 @@ func RegisterV1(group fiber.Router) {
 	projectGrp.Post("", projectConrtoller.Create)
 	projectGrp.Patch(":id", projectConrtoller.Update)
 	projectGrp.Delete(":id", projectConrtoller.Delete)
+
+	// Entries
+	protected.Get("/entries/", entryController.Query)
+	protected.Get("/entries/:id", entryController.QueryByID)
+	protected.Post("/entries/", entryController.Create)
+	protected.Patch("/entries/:id", entryController.Update)
+	protected.Delete("/entries/:id", entryController.Delete)
 }
