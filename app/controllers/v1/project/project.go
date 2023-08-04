@@ -15,8 +15,8 @@ type ProjectController struct {
 	db *gorm.DB
 }
 
-func MakeController(db *gorm.DB) ProjectController {
-	return ProjectController{
+func MakeController(db *gorm.DB) *ProjectController {
+	return &ProjectController{
 		db: db,
 	}
 }

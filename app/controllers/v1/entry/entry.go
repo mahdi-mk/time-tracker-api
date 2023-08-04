@@ -11,8 +11,8 @@ type EntryController struct {
 	db *gorm.DB
 }
 
-func MakeController(db *gorm.DB) EntryController {
-	return EntryController{
+func MakeController(db *gorm.DB) *EntryController {
+	return &EntryController{
 		db: db,
 	}
 }

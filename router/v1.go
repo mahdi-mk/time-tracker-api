@@ -8,6 +8,7 @@ import (
 	"github.com/mahdi-mk/time-tracker/app/controllers/v1/organization"
 	"github.com/mahdi-mk/time-tracker/app/controllers/v1/project"
 	"github.com/mahdi-mk/time-tracker/app/middlewares"
+	"github.com/mahdi-mk/time-tracker/support/router"
 	"gorm.io/gorm"
 )
 
@@ -27,34 +28,14 @@ func registerV1(group fiber.Router, db *gorm.DB) {
 	protected := group.Use(middlewares.Protected())
 
 	// Organizations
-	organizationController := organization.MakeController(db)
-	protected.Get("/organizations/", organizationController.Query)
-	protected.Get("/organizations/:id", organizationController.QueryByID)
-	protected.Post("/organizations/", organizationController.Create)
-	protected.Patch("/organizations/:id", organizationController.Update)
-	protected.Delete("/organizations/:id", organizationController.Delete)
+	router.Resource("organizations", protected, organization.MakeController(db))
 
 	// Clients
-	clientConrtoller := client.MakeController(db)
-	protected.Get("/clients/", clientConrtoller.Query)
-	protected.Get("/clients/:id", clientConrtoller.QueryByID)
-	protected.Post("/clients/", clientConrtoller.Create)
-	protected.Patch("/clients/:id", clientConrtoller.Update)
-	protected.Delete("/clients/:id", clientConrtoller.Delete)
+	router.Resource("clients", protected, client.MakeController(db))
 
 	// Projects
-	projectController := project.MakeController(db)
-	protected.Get("/projects/", projectController.Query)
-	protected.Get("/projects/:id", projectController.QueryByID)
-	protected.Post("/projects/", projectController.Create)
-	protected.Patch("/projects/:id", projectController.Update)
-	protected.Delete("/projects/:id", projectController.Delete)
+	router.Resource("projects", protected, project.MakeController(db))
 
 	// Entries
-	entryController := entry.MakeController(db)
-	protected.Get("/entries/", entryController.Query)
-	protected.Get("/entries/:id", entryController.QueryByID)
-	protected.Post("/entries/", entryController.Create)
-	protected.Patch("/entries/:id", entryController.Update)
-	protected.Delete("/entries/:id", entryController.Delete)
+	router.Resource("entries", protected, entry.MakeController(db))
 }

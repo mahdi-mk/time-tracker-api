@@ -14,8 +14,8 @@ type ClientController struct {
 	db *gorm.DB
 }
 
-func MakeController(db *gorm.DB) ClientController {
-	return ClientController{
+func MakeController(db *gorm.DB) *ClientController {
+	return &ClientController{
 		db: db,
 	}
 }

@@ -14,8 +14,8 @@ type OrganizationController struct {
 	db *gorm.DB
 }
 
-func MakeController(db *gorm.DB) OrganizationController {
-	return OrganizationController{
+func MakeController(db *gorm.DB) *OrganizationController {
+	return &OrganizationController{
 		db: db,
 	}
 }
