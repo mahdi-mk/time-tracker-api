@@ -1,4 +1,4 @@
-package router
+package v1
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func registerV1(group fiber.Router, db *gorm.DB) {
+func Register(group fiber.Router, db *gorm.DB) {
 
 	//======================================================
 	// Public Routes

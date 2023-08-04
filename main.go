@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/log"
+	"github.com/mahdi-mk/time-tracker/app/controllers"
 	"github.com/mahdi-mk/time-tracker/database"
-	"github.com/mahdi-mk/time-tracker/router"
 	"github.com/mahdi-mk/time-tracker/support/env"
 	"github.com/mahdi-mk/time-tracker/support/validator"
 )
@@ -24,8 +24,7 @@ func main() {
 	db := database.ConnectDB()
 	database.RunMigrations()
 
-	// Register all application routes
-	router.RegisterRoutes(app, db)
+	controllers.Register(app, db)
 
 	// Start the server
 	err := app.Listen(":8080")
