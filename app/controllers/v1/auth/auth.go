@@ -7,9 +7,9 @@ import (
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
 	"github.com/mahdi-mk/time-tracker/database"
+	"github.com/mahdi-mk/time-tracker/support/hash"
+	"github.com/mahdi-mk/time-tracker/support/jwt"
 	"github.com/mahdi-mk/time-tracker/support/validator"
-	"github.com/mahdi-mk/time-tracker/utils/hash"
-	"github.com/mahdi-mk/time-tracker/utils/jwt"
 	"gorm.io/gorm"
 )
 

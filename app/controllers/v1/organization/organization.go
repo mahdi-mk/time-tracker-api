@@ -5,8 +5,8 @@ import (
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
 	"github.com/mahdi-mk/time-tracker/database"
+	"github.com/mahdi-mk/time-tracker/support/auth"
 	"github.com/mahdi-mk/time-tracker/support/validator"
-	"github.com/mahdi-mk/time-tracker/utils/auth"
 )
 
 // Query returns a paginated list of organizations

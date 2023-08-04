@@ -3,7 +3,7 @@ package middlewares
 import (
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/mahdi-mk/time-tracker/utils/env"
+	"github.com/mahdi-mk/time-tracker/support/env"
 )
 
 func Protected() func(c *fiber.Ctx) error {

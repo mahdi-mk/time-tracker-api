@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 
-	"github.com/mahdi-mk/time-tracker/utils/env"
+	"github.com/mahdi-mk/time-tracker/support/env"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

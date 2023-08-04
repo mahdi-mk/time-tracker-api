@@ -5,7 +5,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// GetAuthID retrieves the authenticated user's ID
+// GetID retrieves the authenticated user's ID from the given context
 func GetID(c *fiber.Ctx) uint {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
