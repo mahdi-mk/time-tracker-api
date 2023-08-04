@@ -6,15 +6,24 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
-	"github.com/mahdi-mk/time-tracker/database"
 	"github.com/mahdi-mk/time-tracker/support/hash"
 	"github.com/mahdi-mk/time-tracker/support/jwt"
 	"github.com/mahdi-mk/time-tracker/support/validator"
 	"gorm.io/gorm"
 )
 
+type AuthController struct {
+	db *gorm.DB
+}
+
+func MakeController(db *gorm.DB) AuthController {
+	return AuthController{
+		db: db,
+	}
+}
+
 // Register registers a new user to the system
-func Register(c *fiber.Ctx) error {
+func (cont *AuthController) Register(c *fiber.Ctx) error {
 	request := new(requests.RegisterUserRequest)
 
 	if err := validator.ValidateRequest(c, request); err != nil {
@@ -23,7 +32,7 @@ func Register(c *fiber.Ctx) error {
 
 	var user models.User
 
-	err := database.DB.First(&user, "email = ?", request.Email).Error
+	err := cont.db.First(&user, "email = ?", request.Email).Error
 
 	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -38,7 +47,7 @@ func Register(c *fiber.Ctx) error {
 		Password:  hash.Generate(request.Password),
 	}
 
-	database.DB.Create(&user)
+	cont.db.Create(&user)
 
 	token, _ := jwt.GenerateToken(&jwt.TokenPayload{UserID: user.ID})
 
@@ -49,7 +58,7 @@ func Register(c *fiber.Ctx) error {
 }
 
 // Login logins an existing user to the system
-func Login(c *fiber.Ctx) error {
+func (cont *AuthController) Login(c *fiber.Ctx) error {
 	request := new(requests.LoginUserRequest)
 
 	if err := validator.ValidateRequest(c, request); err != nil {
@@ -57,7 +66,7 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	var user models.User
-	err := database.DB.First(&user, "email = ?", request.Email).Error
+	err := cont.db.First(&user, "email = ?", request.Email).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{

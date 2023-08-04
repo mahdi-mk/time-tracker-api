@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDB() {
+func ConnectDB() *gorm.DB {
 	var err error
 
 	dsn := fmt.Sprintf(
@@ -25,4 +25,6 @@ func ConnectDB() {
 	if err != nil {
 		panic("Failed to connect to the database")
 	}
+
+	return DB
 }

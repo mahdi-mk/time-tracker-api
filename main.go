@@ -21,12 +21,11 @@ func main() {
 		AppName: env.Get("APP_NAME", ""),
 	})
 
-	// Register all application routes
-	router.RegisterRoutes(app)
-
-	// Connect to database and run migrations
-	database.ConnectDB()
+	db := database.ConnectDB()
 	database.RunMigrations()
+
+	// Register all application routes
+	router.RegisterRoutes(app, db)
 
 	// Start the server
 	err := app.Listen(":8080")

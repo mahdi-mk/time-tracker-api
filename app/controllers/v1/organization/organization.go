@@ -7,10 +7,21 @@ import (
 	"github.com/mahdi-mk/time-tracker/database"
 	"github.com/mahdi-mk/time-tracker/support/auth"
 	"github.com/mahdi-mk/time-tracker/support/validator"
+	"gorm.io/gorm"
 )
 
+type OrganizationController struct {
+	db *gorm.DB
+}
+
+func MakeController(db *gorm.DB) OrganizationController {
+	return OrganizationController{
+		db: db,
+	}
+}
+
 // Query returns a paginated list of organizations
-func Query(c *fiber.Ctx) error {
+func (cont *OrganizationController) Query(c *fiber.Ctx) error {
 	var organizations []models.Organization
 
 	database.DB.Find(&organizations)
@@ -19,7 +30,7 @@ func Query(c *fiber.Ctx) error {
 }
 
 // QueryByID returns a specific organization by its ID
-func QueryByID(c *fiber.Ctx) error {
+func (cont *OrganizationController) QueryByID(c *fiber.Ctx) error {
 	var organization models.Organization
 	database.DB.First(&organization, c.Params("id"))
 
@@ -33,7 +44,7 @@ func QueryByID(c *fiber.Ctx) error {
 }
 
 // Create stores a new organization to the database
-func Create(c *fiber.Ctx) error {
+func (cont *OrganizationController) Create(c *fiber.Ctx) error {
 	request := new(requests.CreateOrUpdateOrganization)
 
 	if err := validator.ValidateRequest(c, request); err != nil {
@@ -50,7 +61,7 @@ func Create(c *fiber.Ctx) error {
 }
 
 // Update updates the data of the specified organization
-func Update(c *fiber.Ctx) error {
+func (cont *OrganizationController) Update(c *fiber.Ctx) error {
 	request := new(requests.CreateOrUpdateOrganization)
 	var organization models.Organization
 
@@ -72,7 +83,7 @@ func Update(c *fiber.Ctx) error {
 }
 
 // Delete deletes the specified organization from the database
-func Delete(c *fiber.Ctx) error {
+func (cont *OrganizationController) Delete(c *fiber.Ctx) error {
 	var organization models.Organization
 	database.DB.First(&organization, c.Params("id"))
 

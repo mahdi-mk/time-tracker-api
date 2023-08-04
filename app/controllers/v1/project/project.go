@@ -8,10 +8,21 @@ import (
 	"github.com/mahdi-mk/time-tracker/app/requests"
 	"github.com/mahdi-mk/time-tracker/database"
 	"github.com/mahdi-mk/time-tracker/support/validator"
+	"gorm.io/gorm"
 )
 
+type ProjectController struct {
+	db *gorm.DB
+}
+
+func MakeController(db *gorm.DB) ProjectController {
+	return ProjectController{
+		db: db,
+	}
+}
+
 // Query returns a paginated list of projects
-func Query(c *fiber.Ctx) error {
+func (cont *ProjectController) Query(c *fiber.Ctx) error {
 	var projects []models.Project
 
 	database.DB.Find(&projects)
@@ -20,7 +31,7 @@ func Query(c *fiber.Ctx) error {
 }
 
 // QueryByID returns a specific project by its ID
-func QueryByID(c *fiber.Ctx) error {
+func (cont *ProjectController) QueryByID(c *fiber.Ctx) error {
 	var project models.Project
 	database.DB.First(&project, c.Params("id"))
 
@@ -34,7 +45,7 @@ func QueryByID(c *fiber.Ctx) error {
 }
 
 // Create stores a new project to the database
-func Create(c *fiber.Ctx) error {
+func (cont *ProjectController) Create(c *fiber.Ctx) error {
 	request := new(requests.CreateOrUpdateProject)
 
 	if err := validator.ValidateRequest(c, request); err != nil {
@@ -60,7 +71,7 @@ func Create(c *fiber.Ctx) error {
 }
 
 // Update updates the data of the specified project
-func Update(c *fiber.Ctx) error {
+func (cont *ProjectController) Update(c *fiber.Ctx) error {
 	request := new(requests.CreateOrUpdateProject)
 	var project models.Project
 
@@ -82,7 +93,7 @@ func Update(c *fiber.Ctx) error {
 }
 
 // Delete deletes the specified project from the database
-func Delete(c *fiber.Ctx) error {
+func (cont *ProjectController) Delete(c *fiber.Ctx) error {
 	var project models.Project
 	database.DB.First(&project, c.Params("id"))
 

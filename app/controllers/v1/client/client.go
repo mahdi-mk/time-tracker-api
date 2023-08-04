@@ -6,23 +6,33 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
-	"github.com/mahdi-mk/time-tracker/database"
 	"github.com/mahdi-mk/time-tracker/support/validator"
+	"gorm.io/gorm"
 )
 
+type ClientController struct {
+	db *gorm.DB
+}
+
+func MakeController(db *gorm.DB) ClientController {
+	return ClientController{
+		db: db,
+	}
+}
+
 // Query returns a paginated list of clients
-func Query(c *fiber.Ctx) error {
+func (cont *ClientController) Query(c *fiber.Ctx) error {
 	var clients []models.Client
 
-	database.DB.Find(&clients)
+	cont.db.Find(&clients)
 
 	return c.JSON(clients)
 }
 
 // QueryByID returns a specific client by its ID
-func QueryByID(c *fiber.Ctx) error {
+func (cont *ClientController) QueryByID(c *fiber.Ctx) error {
 	var client models.Client
-	database.DB.First(&client, c.Params("id"))
+	cont.db.First(&client, c.Params("id"))
 
 	if client.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -34,7 +44,7 @@ func QueryByID(c *fiber.Ctx) error {
 }
 
 // Create stores a new client to the database
-func Create(c *fiber.Ctx) error {
+func (cont *ClientController) Create(c *fiber.Ctx) error {
 	request := new(requests.CreateOrUpdateClient)
 
 	if err := validator.ValidateRequest(c, request); err != nil {
@@ -46,13 +56,13 @@ func Create(c *fiber.Ctx) error {
 		Name:           request.Name,
 		OrganizationID: uint(orgID),
 	}
-	database.DB.Create(&client)
+	cont.db.Create(&client)
 
 	return c.Status(fiber.StatusCreated).JSON(client)
 }
 
 // Update updates the data of the specified client
-func Update(c *fiber.Ctx) error {
+func (cont *ClientController) Update(c *fiber.Ctx) error {
 	request := new(requests.CreateOrUpdateClient)
 
 	if err := validator.ValidateRequest(c, request); err != nil {
@@ -62,14 +72,14 @@ func Update(c *fiber.Ctx) error {
 	client := models.Client{
 		Name: request.Name,
 	}
-	database.DB.Where("id = ?", c.Params("id")).Updates(&client)
+	cont.db.Where("id = ?", c.Params("id")).Updates(&client)
 
 	return c.JSON(client)
 }
 
 // Delete deletes the specified client from the database
-func Delete(c *fiber.Ctx) error {
-	database.DB.Delete(&models.Client{}, c.Params("id"))
+func (cont *ClientController) Delete(c *fiber.Ctx) error {
+	cont.db.Delete(&models.Client{}, c.Params("id"))
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
