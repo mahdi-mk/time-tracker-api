@@ -1,13 +1,10 @@
 package project
 
 import (
-	"strconv"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
 	"github.com/mahdi-mk/time-tracker/database"
-	"github.com/mahdi-mk/time-tracker/support/validator"
 	"gorm.io/gorm"
 )
 
@@ -37,7 +34,7 @@ func (cont *ProjectController) QueryByID(c *fiber.Ctx) error {
 
 	if project.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Project Not Found",
+			"error": "Project not found",
 		})
 	}
 
@@ -46,19 +43,12 @@ func (cont *ProjectController) QueryByID(c *fiber.Ctx) error {
 
 // Create stores a new project to the database
 func (cont *ProjectController) Create(c *fiber.Ctx) error {
-	request := new(requests.CreateOrUpdateProject)
+	project, errors := new(requests.CreateOrUpdateProjectRequest).Validated(c)
 
-	if err := validator.ValidateRequest(c, request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(err)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
-	orgID, _ := strconv.ParseUint(c.Locals("OrgID").(string), 10, 32)
-	project := models.Project{
-		Name:           request.Name,
-		Description:    request.Description,
-		OrganizationID: uint(orgID),
-		ClientID:       request.ClientID,
-	}
 	database.DB.Create(&project)
 
 	return c.Status(fiber.StatusCreated).JSON(project)
@@ -66,22 +56,13 @@ func (cont *ProjectController) Create(c *fiber.Ctx) error {
 
 // Update updates the data of the specified project
 func (cont *ProjectController) Update(c *fiber.Ctx) error {
-	request := new(requests.CreateOrUpdateProject)
-	var project models.Project
+	project, errors := new(requests.CreateOrUpdateProjectRequest).Validated(c)
 
-	database.DB.First(&project, c.Params("id"))
-
-	if project.ID == 0 {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Project Not Found",
-		})
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
-	if err := validator.ValidateRequest(c, request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(err)
-	}
-
-	database.DB.Model(&project).Updates(request)
+	cont.db.Where(c.Params("id")).Updates(&project)
 
 	return c.JSON(project)
 }
@@ -93,7 +74,7 @@ func (cont *ProjectController) Delete(c *fiber.Ctx) error {
 
 	if project.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Project Not Found",
+			"error": "Project not found",
 		})
 	}
 

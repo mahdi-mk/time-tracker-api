@@ -1,12 +1,9 @@
 package client
 
 import (
-	"strconv"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
-	"github.com/mahdi-mk/time-tracker/support/validator"
 	"gorm.io/gorm"
 )
 
@@ -36,7 +33,7 @@ func (cont *ClientController) QueryByID(c *fiber.Ctx) error {
 
 	if client.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Client Not Found",
+			"error": "Client not found",
 		})
 	}
 
@@ -45,17 +42,12 @@ func (cont *ClientController) QueryByID(c *fiber.Ctx) error {
 
 // Create stores a new client to the database
 func (cont *ClientController) Create(c *fiber.Ctx) error {
-	request := new(requests.CreateOrUpdateClient)
+	client, errors := new(requests.CreateOrUpdateClientRequest).Validated(c)
 
-	if err := validator.ValidateRequest(c, request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(err)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
-	orgID, _ := strconv.ParseUint(c.Locals("OrgID").(string), 10, 32)
-	client := models.Client{
-		Name:           request.Name,
-		OrganizationID: uint(orgID),
-	}
 	cont.db.Create(&client)
 
 	return c.Status(fiber.StatusCreated).JSON(client)
@@ -63,23 +55,29 @@ func (cont *ClientController) Create(c *fiber.Ctx) error {
 
 // Update updates the data of the specified client
 func (cont *ClientController) Update(c *fiber.Ctx) error {
-	request := new(requests.CreateOrUpdateClient)
+	client, errors := new(requests.CreateOrUpdateClientRequest).Validated(c)
 
-	if err := validator.ValidateRequest(c, request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(err)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
-	client := models.Client{
-		Name: request.Name,
-	}
-	cont.db.Where("id = ?", c.Params("id")).Updates(&client)
+	cont.db.Where(c.Params("id")).Updates(&client)
 
 	return c.JSON(client)
 }
 
 // Delete deletes the specified client from the database
 func (cont *ClientController) Delete(c *fiber.Ctx) error {
-	cont.db.Delete(&models.Client{}, c.Params("id"))
+	var client models.Client
+	cont.db.First(&client, c.Params("id"))
+
+	if client.ID == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Client not found",
+		})
+	}
+
+	cont.db.Delete(&client)
 
 	return c.SendStatus(fiber.StatusNoContent)
 }

@@ -42,7 +42,7 @@ func (cont *EntryController) QueryByID(c *fiber.Ctx) error {
 
 // Create stores a new entry to the database
 func (cont *EntryController) Create(c *fiber.Ctx) error {
-	entry, errors := new(requests.CreateOrUpdateEntryRequest).GetValidatedData(c)
+	entry, errors := new(requests.CreateOrUpdateEntryRequest).Validated(c)
 
 	if errors != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errors)
@@ -55,13 +55,13 @@ func (cont *EntryController) Create(c *fiber.Ctx) error {
 
 // Update updates the data of the specified entry
 func (cont *EntryController) Update(c *fiber.Ctx) error {
-	entry, errors := new(requests.CreateOrUpdateEntryRequest).GetValidatedData(c)
+	entry, errors := new(requests.CreateOrUpdateEntryRequest).Validated(c)
 
 	if errors != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
-	cont.db.Model(&entry).Updates(entry)
+	cont.db.Where(c.Params("id")).Updates(&entry)
 
 	return c.JSON(entry)
 }

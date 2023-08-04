@@ -4,9 +4,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
-	"github.com/mahdi-mk/time-tracker/database"
-	"github.com/mahdi-mk/time-tracker/support/auth"
-	"github.com/mahdi-mk/time-tracker/support/validator"
 	"gorm.io/gorm"
 )
 
@@ -24,7 +21,7 @@ func MakeController(db *gorm.DB) *OrganizationController {
 func (cont *OrganizationController) Query(c *fiber.Ctx) error {
 	var organizations []models.Organization
 
-	database.DB.Find(&organizations)
+	cont.db.Find(&organizations)
 
 	return c.JSON(organizations)
 }
@@ -32,11 +29,11 @@ func (cont *OrganizationController) Query(c *fiber.Ctx) error {
 // QueryByID returns a specific organization by its ID
 func (cont *OrganizationController) QueryByID(c *fiber.Ctx) error {
 	var organization models.Organization
-	database.DB.First(&organization, c.Params("id"))
+	cont.db.First(&organization, c.Params("id"))
 
 	if organization.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Organization Not Found",
+			"error": "Organization not found",
 		})
 	}
 
@@ -45,39 +42,26 @@ func (cont *OrganizationController) QueryByID(c *fiber.Ctx) error {
 
 // Create stores a new organization to the database
 func (cont *OrganizationController) Create(c *fiber.Ctx) error {
-	request := new(requests.CreateOrUpdateOrganization)
+	organization, errors := new(requests.CreateOrUpdateOrganizationRequest).Validated(c)
 
-	if err := validator.ValidateRequest(c, request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(err)
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
-	organization := models.Organization{
-		Name:   request.Name,
-		UserID: auth.GetID(c),
-	}
-	database.DB.Create(&organization)
+	cont.db.Create(&organization)
 
 	return c.Status(fiber.StatusCreated).JSON(organization)
 }
 
 // Update updates the data of the specified organization
 func (cont *OrganizationController) Update(c *fiber.Ctx) error {
-	request := new(requests.CreateOrUpdateOrganization)
-	var organization models.Organization
+	organization, errors := new(requests.CreateOrUpdateOrganizationRequest).Validated(c)
 
-	database.DB.First(&organization, c.Params("id"))
-
-	if organization.ID == 0 {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Organization Not Found",
-		})
+	if errors != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(errors)
 	}
 
-	if err := validator.ValidateRequest(c, request); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(err)
-	}
-
-	database.DB.Model(&organization).Updates(request)
+	cont.db.Where(c.Params("id")).Updates(&organization)
 
 	return c.JSON(organization)
 }
@@ -85,7 +69,7 @@ func (cont *OrganizationController) Update(c *fiber.Ctx) error {
 // Delete deletes the specified organization from the database
 func (cont *OrganizationController) Delete(c *fiber.Ctx) error {
 	var organization models.Organization
-	database.DB.First(&organization, c.Params("id"))
+	cont.db.First(&organization, c.Params("id"))
 
 	if organization.ID == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -93,7 +77,7 @@ func (cont *OrganizationController) Delete(c *fiber.Ctx) error {
 		})
 	}
 
-	database.DB.Delete(&organization)
+	cont.db.Delete(&organization)
 
 	return c.SendStatus(fiber.StatusNoContent)
 }
