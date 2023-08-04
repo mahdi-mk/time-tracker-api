@@ -13,9 +13,6 @@ func main() {
 	// Environment Variables Support
 	env.Init()
 
-	// Validation Support
-	validator.Init()
-
 	// Initialize the application
 	app := fiber.New(fiber.Config{
 		AppName: env.Get("APP_NAME", ""),
@@ -25,6 +22,8 @@ func main() {
 	database.RunMigrations()
 
 	controllers.Register(app, db)
+
+	validator.Init(db)
 
 	// Start the server
 	err := app.Listen(":8080")

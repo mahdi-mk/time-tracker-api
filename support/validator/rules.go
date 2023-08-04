@@ -4,11 +4,24 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"gorm.io/gorm"
 )
 
-func registerValidationRules() {
+func registerValidationRules(db *gorm.DB) {
 	// Register your custom rules here
 	validatorInstance.RegisterValidation("datetime_custom", customDateTimeRule)
+
+	// This rule ensures that the value is a primary key,
+	// and it exists in the provied table.
+	validatorInstance.RegisterValidation("exists", func(fl validator.FieldLevel) bool {
+		id := fl.Field().Uint()
+		table := fl.Param()
+
+		var entity struct{ ID uint }
+		db.Table(table).First(&entity, "id = ?", id)
+
+		return entity.ID != 0
+	})
 }
 
 //------------------------------------------------------------------------------------

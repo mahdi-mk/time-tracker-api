@@ -52,12 +52,6 @@ func (cont *ProjectController) Create(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
-	if res := database.DB.First(&models.Client{}, request.ClientID); res.Error != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "Invalid Client ID",
-		})
-	}
-
 	orgID, _ := strconv.ParseUint(c.Locals("OrgID").(string), 10, 32)
 	project := models.Project{
 		Name:           request.Name,

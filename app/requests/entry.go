@@ -13,7 +13,7 @@ type CreateOrUpdateEntryRequest struct {
 	Description string `json:"description" validate:"max=100"`
 	From        string `json:"from" validate:"required,datetime_custom"`
 	To          string `json:"to" validate:"required,datetime_custom"`
-	ProjectID   uint   `json:"project_id"`
+	ProjectID   uint   `json:"project_id" validate:"exists:projects"`
 }
 
 // GetValidatedData validates the request and returns the validated data as a model
