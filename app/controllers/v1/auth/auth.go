@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mahdi-mk/time-tracker/app/models"
 	"github.com/mahdi-mk/time-tracker/app/requests"
+	"github.com/mahdi-mk/time-tracker/support/auth"
 	"github.com/mahdi-mk/time-tracker/support/hash"
 	"github.com/mahdi-mk/time-tracker/support/jwt"
 	"github.com/mahdi-mk/time-tracker/support/validator"
@@ -51,6 +52,11 @@ func (cont *AuthController) Register(c *fiber.Ctx) error {
 
 	token, _ := jwt.GenerateToken(&jwt.TokenPayload{UserID: user.ID})
 
+	cont.db.Create(&models.Token{
+		Token:  token,
+		UserID: user.ID,
+	})
+
 	return c.JSON(fiber.Map{
 		"user":  user,
 		"token": token,
@@ -82,8 +88,29 @@ func (cont *AuthController) Login(c *fiber.Ctx) error {
 
 	token, _ := jwt.GenerateToken(&jwt.TokenPayload{UserID: user.ID})
 
+	cont.db.Create(&models.Token{
+		Token:  token,
+		UserID: user.ID,
+	})
+
 	return c.JSON(fiber.Map{
 		"user":  user,
 		"token": token,
 	})
+}
+
+// Logout logouts a user from the system and revoke all tokens
+func (cont *AuthController) Logout(c *fiber.Ctx) error {
+	var token models.Token
+	cont.db.Where("token = ?", auth.GetToken(c)).First(&token)
+
+	if token.ID == 0 {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "Token not found",
+		})
+	}
+
+	cont.db.Delete(&token)
+
+	return c.SendStatus(fiber.StatusNoContent)
 }

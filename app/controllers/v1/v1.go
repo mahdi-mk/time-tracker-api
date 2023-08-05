@@ -17,7 +17,7 @@ func Register(group fiber.Router, db *gorm.DB) {
 	//======================================================
 	// Public Routes
 
-	// Authentication
+	// Authentication (Public)
 	authController := auth.MakeController(db)
 	group.Post("/auth/register/", authController.Register)
 	group.Post("/auth/login/", authController.Login)
@@ -25,7 +25,10 @@ func Register(group fiber.Router, db *gorm.DB) {
 	//======================================================
 	// Protected Routes
 
-	protected := group.Use(middlewares.Protected())
+	protected := group.Use(middlewares.Protected(db))
+
+	// Authentication (Protected)
+	protected.Post("/auth/logout/", authController.Logout)
 
 	// Organizations
 	router.Resource("organizations", protected, organization.MakeController(db))

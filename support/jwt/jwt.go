@@ -1,8 +1,6 @@
 package jwt
 
 import (
-	"time"
-
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/mahdi-mk/time-tracker/support/env"
 )
@@ -16,7 +14,6 @@ type TokenPayload struct {
 func GenerateToken(payload *TokenPayload) (string, error) {
 	claims := jwt.MapClaims{
 		"uid": payload.UserID,
-		"exp": time.Now().Add(time.Hour * 72).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
