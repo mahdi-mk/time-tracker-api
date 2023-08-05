@@ -36,9 +36,6 @@ asset/*
 # Build output directory
 /build
 
-# Generated documentation
-/docs
-
 # Ignore vendor directory (if you're using Go modules)
 /vendor/
 
